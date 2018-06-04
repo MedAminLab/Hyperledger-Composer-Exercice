@@ -1,0 +1,164 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Write your model definitions here
+ */
+
+namespace org.acme.sintegralabsbc
+import composer.base.*
+
+participant Buyer identified by buyerID extends Member{
+    o String buyerID
+    
+}
+participant Seller identified by sellerID extends Member{
+    o String sellerID
+    
+}
+participant Shipper identified by shipperID extends Member {
+    o String shipperID
+}
+
+participant FinanceCo identified by financeCoID extends Member {
+    o String financeCoID
+    
+}
+
+asset Order identified by orderNumber {
+    o String orderNumber
+    o Status status
+    o Integer amount
+    o String createdDate
+    o String boughtDate
+    o String orderedDate
+    o String paymentRequestedDate
+    o String paidDate
+    o String requestShipmentDate
+    o String deliveredDate
+	o String disputeMsg
+    o String disputeOpened
+    o String disputeDecline
+    o String disputeResolved
+    o String exchangeDate
+    o String refundDate
+    o String refundtRequestedDate
+    o String getRefundtDate
+    --> Buyer buyer
+    --> Seller seller
+    --> Shipper shipper
+    --> FinanceCo financeco
+
+}
+enum Status{
+  o init
+  o Order_Created
+  o Purchased
+  o Payment_Requested
+  o Paid
+  o Shipment_Requested
+  o Delivered
+  o Dispute
+  o ToExchange
+  o Exchange
+  o ToRefund
+  o Resolve
+  o Refund
+  o Refund_Requested
+  o Refund_Sent
+  o Dispute_Declined
+}
+
+  transaction CreateOrder {
+    o Integer amount
+    --> Order order
+    --> Buyer buyer
+    --> Seller seller
+}
+  transaction Buy {
+    --> Order order
+    --> Buyer buyer
+    --> FinanceCo financeco
+}
+
+  transaction RequestShipping {
+    --> Order order
+    --> Seller seller
+    --> Shipper shipper
+}
+  transaction Deliver {
+    --> Order order
+    --> Buyer buyer
+    --> Shipper shipper
+}
+  transaction RequestPayment {
+    --> Order order
+    --> Seller seller
+    --> FinanceCo financeCo
+}
+  transaction Pay {
+    --> Order order
+    --> Seller seller
+    --> FinanceCo financeCo
+}
+  transaction Dispute {
+    o String dispute
+    --> Order order
+    --> Buyer buyer
+    --> Seller seller
+}
+transaction Dispute2 {
+    --> Order order
+}
+  transaction ResolveForExchange {
+    o String resolveStatus
+    --> Order order
+    --> Buyer buyer
+    --> Seller seller
+}
+
+ transaction ResolveForRefund {
+    o String resolveStatus
+    --> Order order
+    --> FinanceCo financeco
+    --> Seller seller
+}
+  transaction Refund {
+    --> Order order
+    --> Seller seller
+    --> FinanceCo financeCo
+}
+  transaction RequestRefund {
+    --> Order order
+    --> Buyer buyer
+    --> Seller seller
+    --> FinanceCo financeCo
+}
+  transaction GetRefund {
+    --> Order order
+    --> Buyer buyer
+    --> FinanceCo financeCo
+}
+  transaction Exchange {
+    --> Order order
+    --> Buyer buyer
+    --> Seller seller
+}
+  transaction Decline {
+    --> Order order
+    --> Buyer buyer
+    --> Seller seller
+}
+
+transaction Setup {}
