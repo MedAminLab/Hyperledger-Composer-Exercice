@@ -1,6 +1,0 @@
-namespace composer.base
-
-abstract participant Member {
-  o String companyName
-  o Double balance
-}
